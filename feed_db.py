@@ -8,10 +8,7 @@ load_dotenv()
 if 'port' not in os.environ:
     os.environ['port'] = '5432'
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
-
+# configurations
 DB_CONFIG = {
     "host": os.environ['host'],
     "port": int(os.environ['port']),
@@ -23,10 +20,7 @@ DB_CONFIG = {
 CSV_DIR = "data"
 
 
-# ============================================================
 # DATABASE CONNECTION
-# ============================================================
-
 conn = psycopg2.connect(**DB_CONFIG)
 conn.autocommit = False
 
@@ -35,10 +29,7 @@ cursor = conn.cursor()
 print("Connected to PostgreSQL")
 
 
-# ============================================================
 # CREATE TABLES
-# ============================================================
-
 create_tables_sql = """
 
 CREATE SCHEMA IF NOT EXISTS public;
@@ -216,12 +207,6 @@ cursor.execute(create_tables_sql)
 print("Tables created successfully")
 
 
-# ============================================================
-# OPTIONAL: CLEAR EXISTING DATA
-# ============================================================
-
-# Uncomment this section if you want every execution
-# to completely reload the CSV data.
 
 
 cursor.execute("""
@@ -236,10 +221,7 @@ cursor.execute("""
 
 
 
-# ============================================================
 # LOAD CSV USING POSTGRES COPY
-# ============================================================
-
 def load_csv(table_name, csv_file, columns):
 
     file_path = os.path.join(CSV_DIR, csv_file)
@@ -280,10 +262,7 @@ def load_csv(table_name, csv_file, columns):
     print(f"Loaded {csv_file}")
 
 
-# ============================================================
 # LOAD USERS
-# ============================================================
-
 load_csv(
     "users",
     "users.csv",
@@ -302,10 +281,7 @@ load_csv(
 )
 
 
-# ============================================================
 # LOAD VEHICLES
-# ============================================================
-
 load_csv(
     "vehicles",
     "vehicles.csv",
@@ -322,10 +298,7 @@ load_csv(
 )
 
 
-# ============================================================
 # LOAD RIDES
-# ============================================================
-
 load_csv(
     "rides",
     "rides.csv",
@@ -349,9 +322,7 @@ load_csv(
 )
 
 
-# ============================================================
 # LOAD PAYMENTS
-# ============================================================
 
 load_csv(
     "payments",
@@ -369,10 +340,7 @@ load_csv(
 )
 
 
-# ============================================================
 # LOAD RATINGS
-# ============================================================
-
 load_csv(
     "ratings",
     "ratings.csv",
@@ -388,10 +356,7 @@ load_csv(
 )
 
 
-# ============================================================
 # VERIFY RECORD COUNTS
-# ============================================================
-
 tables = [
     "users",
     "vehicles",
@@ -419,20 +384,14 @@ for table in tables:
     print(f"{table:<15} {count:>10,}")
 
 
-# ============================================================
 # COMMIT
-# ============================================================
-
 conn.commit()
 
 print("\nData loaded successfully!")
 print("Transaction committed.")
 
 
-# ============================================================
 # CLOSE CONNECTION
-# ============================================================
-
 cursor.close()
 conn.close()
 
